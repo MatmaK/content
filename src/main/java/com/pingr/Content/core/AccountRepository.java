@@ -1,4 +1,4 @@
-package com.pingr.Chassis.core;
+package com.pingr.Content.core;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

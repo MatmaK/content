@@ -1,10 +1,10 @@
-package com.pingr.Chassis;
+package com.pingr.Content;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ChassisApplicationTests {
+class ContentApplicationTests {
 
 	@Test
 	void contextLoads() {

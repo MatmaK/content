@@ -1,4 +1,4 @@
-package com.pingr.Chassis.core;
+package com.pingr.Content.core;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

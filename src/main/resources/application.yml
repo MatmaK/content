@@ -1,17 +1,13 @@
 spring:
   kafka:
-    producer:
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      bootstrap-servers: localhost:9092
     consumer:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       bootstrap-servers: localhost:9092
-      group-id: CHASSIS-GROUP-ID
+      group-id: content
   datasource:
     username: root
-    url: jdbc:postgresql://localhost:CHASSIS-PG-HOST-PORT/CHASSIS-DB-NAME
+    url: jdbc:postgresql://localhost:5435/content
     password: secret
   jpa:
     properties:
@@ -22,11 +18,7 @@ spring:
       ddl-auto: create-drop
     show-sql: true
 
-topics:
-  acc_created: accounts_created
-  acc_deleted: accounts_removed
-
 server:
-  port: CHASSIS-PORT
+  port: 8084
   error:
     include-message: always
