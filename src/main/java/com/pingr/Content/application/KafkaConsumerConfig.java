@@ -1,9 +1,7 @@
 package com.pingr.Content.application;
 
 import com.pingr.Content.core.Account;
-import com.pingr.Content.core.events.AccountCreatedEvent;
-import com.pingr.Content.core.events.AccountDeletedEvent;
-import com.pingr.Content.core.events.PingCreatedEvent;
+import com.pingr.Content.core.events.*;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -128,11 +126,8 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
-
-    // ==========================
-
-    public ConsumerFactory<String, PingCreatedEvent> pingDeletedEventConsumerFactory() {
-        JsonDeserializer<PingCreatedEvent> jsonDeserializer = new JsonDeserializer<>(PingCreatedEvent.class);
+    public ConsumerFactory<String, PingDeletedEvent> pingDeletedEventConsumerFactory() {
+        JsonDeserializer<PingDeletedEvent> jsonDeserializer = new JsonDeserializer<>(PingDeletedEvent.class);
         jsonDeserializer.setUseTypeMapperForKey(true);
         jsonDeserializer.addTrustedPackages("*");
 
@@ -144,9 +139,51 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, PingCreatedEvent>> pingDeletedEventKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, PingCreatedEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, PingDeletedEvent>> pingDeletedEventKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, PingDeletedEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(pingDeletedEventConsumerFactory());
+
+        return factory;
+    }
+
+    //FRIENDSHIPS LISTENER
+
+    public ConsumerFactory<String, FriendshipCreatedEvent> friendshipCreatedEventConsumerFactory() {
+        JsonDeserializer<FriendshipCreatedEvent> jsonDeserializer = new JsonDeserializer<>(FriendshipCreatedEvent.class);
+        jsonDeserializer.setUseTypeMapperForKey(true);
+        jsonDeserializer.addTrustedPackages("*");
+
+        return new DefaultKafkaConsumerFactory<>(
+                consumerConfig(),
+                new StringDeserializer(),
+                jsonDeserializer
+        );
+    }
+
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, FriendshipCreatedEvent>> friendshipCreatedEventKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, FriendshipCreatedEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(friendshipCreatedEventConsumerFactory());
+
+        return factory;
+    }
+
+    public ConsumerFactory<String, FriendshipDeletedEvent> friendshipDeletedEventConsumerFactory() {
+        JsonDeserializer<FriendshipDeletedEvent> jsonDeserializer = new JsonDeserializer<>(FriendshipDeletedEvent.class);
+        jsonDeserializer.setUseTypeMapperForKey(true);
+        jsonDeserializer.addTrustedPackages("*");
+
+        return new DefaultKafkaConsumerFactory<>(
+                consumerConfig(),
+                new StringDeserializer(),
+                jsonDeserializer
+        );
+    }
+
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, FriendshipDeletedEvent>> friendshipDeletedEventKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, FriendshipDeletedEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(friendshipDeletedEventConsumerFactory());
 
         return factory;
     }

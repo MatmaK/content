@@ -1,12 +1,11 @@
 package com.pingr.Content.application;
 
 import com.pingr.Content.core.Account;
+import com.pingr.Content.core.Friendship;
 import com.pingr.Content.core.Ping;
-import com.pingr.Content.core.events.PingCreatedEvent;
-import com.pingr.Content.core.events.PingDeletedEvent;
+import com.pingr.Content.core.events.*;
 import com.pingr.Content.core.services.SynchronizeAccount;
-import com.pingr.Content.core.events.AccountCreatedEvent;
-import com.pingr.Content.core.events.AccountDeletedEvent;
+import com.pingr.Content.core.services.SynchronizeFriendship;
 import com.pingr.Content.core.services.SynchronizePing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,6 +19,9 @@ public class KafkaConsumerService {
 
     @Autowired
     private SynchronizePing syncPing;
+
+    @Autowired
+    private SynchronizeFriendship syncFriendship;
 
     @KafkaListener(
             containerFactory = "accountCreatedEventKafkaListenerContainerFactory",
@@ -60,5 +62,26 @@ public class KafkaConsumerService {
     public void handlePingDeletion(PingDeletedEvent event) {
         Ping ping = event.extract();
         this.syncPing.remove(ping);
+    }
+
+    //FRIENDSHIP LISTENER
+    @KafkaListener(
+            containerFactory = "friendshipCreatedEventKafkaListenerContainerFactory",
+            topics = "${topics.fshp_establd}",
+            groupId = "${spring.kafka.consumer.group-id}"
+    )
+    public void handleFriendshipCreation(FriendshipCreatedEvent event) {
+        Friendship friendship = event.extract();
+        this.syncFriendship.store(friendship);
+    }
+
+    @KafkaListener(
+            containerFactory = "pingDeletedEventKafkaListenerContainerFactory",
+            topics = "${topics.fshp_deleted}",
+            groupId = "${spring.kafka.consumer.group-id}"
+    )
+    public void handleFriendshipDeletion(FriendshipDeletedEvent event) {
+        Friendship friendship = event.extract();
+        this.syncFriendship.remove(friendship);
     }
 }
